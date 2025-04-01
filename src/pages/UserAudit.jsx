@@ -1,42 +1,37 @@
 import React, { useState } from "react";
-import "../styles/userAudit.css"; // ใช้ไฟล์ CSS ที่เปลี่ยนชื่อเป็น userAudit.css
+import "../styles/UserAudit.css";  // นำเข้าไฟล์ CSS
 
-const UserAudit = () => {
-  const [logs, setLogs] = useState([
-    { id: 1, user: "John Doe", action: "Logged in", timestamp: "2024-04-01 10:00" },
-    { id: 2, user: "Jane Smith", action: "Changed role", timestamp: "2024-04-01 10:05" },
-    { id: 3, user: "John Doe", action: "Deleted account", timestamp: "2024-04-01 10:10" },
+const AuditMonitoring = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [userActivities, setUserActivities] = useState([
+    { id: 1, user: "John Doe", action: "Login", timestamp: "2025-04-01 08:00" },
+    { id: 2, user: "Jane Smith", action: "Password Reset", timestamp: "2025-04-01 09:15" },
+    { id: 3, user: "John Doe", action: "Role Change", timestamp: "2025-04-01 10:00" },
+    { id: 4, user: "Jane Smith", action: "Login", timestamp: "2025-04-01 10:30" },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearch = (e) => {
+  const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // กรองผลลัพธ์ตามคำค้นหา
-  const filteredLogs = logs.filter(
-    (log) =>
-      log.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.action.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredActivities = userActivities.filter((activity) =>
+    activity.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    activity.action.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="user-audit">
+    <div className="audit-monitoring">
       <h2>Audit & Monitoring</h2>
-      <input
-        type="text"
-        placeholder="Search activity..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="search-bar"
-      />
-
-      {/* แสดงข้อความเมื่อไม่มีผลลัพธ์ */}
-      {searchTerm && filteredLogs.length === 0 && (
-        <p className="no-results">No matching activities found.</p>
-      )}
-
+      
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search by user or action"
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
+      
       <table>
         <thead>
           <tr>
@@ -46,17 +41,23 @@ const UserAudit = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredLogs.map((log) => (
-            <tr key={log.id}>
-              <td>{log.user}</td>
-              <td>{log.action}</td>
-              <td>{log.timestamp}</td>
+          {filteredActivities.length > 0 ? (
+            filteredActivities.map((activity) => (
+              <tr key={activity.id}>
+                <td>{activity.user}</td>
+                <td>{activity.action}</td>
+                <td>{activity.timestamp}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">No activities found</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
   );
 };
 
-export default UserAudit;
+export default AuditMonitoring;
